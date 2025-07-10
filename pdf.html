@@ -7,8 +7,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-main: #FFFFFF;
+            --bg-sidebar: #FFFBF9;
+            --text-primary: #1F2937;
+            --text-secondary: #4B5563;
+            --accent-primary: #FE7061;
+            --accent-secondary: #FE5E68;
+            --border-color: #F3EAE8;
+        }
+
         @media print {
             body { 
                 -webkit-print-color-adjust: exact; 
@@ -27,231 +37,259 @@
                 width: 100%;
                 height: 100%;
             }
-            .job-entry, .section {
+            .section, .job-entry {
                 page-break-inside: avoid;
             }
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F3F4F6;
+            font-family: 'Poppins', sans-serif;
+            background-color: #E5E7EB;
         }
         
         .resume-page {
-            background-color: #FFFFFF;
+            background-color: var(--bg-main);
             width: 8.5in;
             min-height: 11in;
             margin: 2rem auto;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            padding: 0.75in;
-            color: #111827;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+        }
+        
+        .left-column {
+            width: 35%;
+            background-color: var(--bg-sidebar);
+            padding: 2rem;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .right-column {
+            width: 65%;
+            padding: 2rem;
         }
 
         .section-title {
-            font-size: 1.125rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: #1E40AF; /* Deep Blue */
-            padding-bottom: 0.25rem;
-            border-bottom: 2px solid #BFDBFE; /* Light Blue */
+            color: var(--accent-primary);
+            padding-bottom: 0.35rem;
+            border-bottom: 2px solid var(--accent-primary);
             margin-bottom: 1rem;
-            letter-spacing: 0.025em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
         
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            color: #4B5563;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
         .contact-item svg {
             width: 14px;
             height: 14px;
-            color: #3B82F6;
+            flex-shrink: 0;
+            color: var(--accent-secondary);
         }
         
         .job-title {
             font-weight: 600;
             font-size: 1.05rem;
+            color: #111827;
         }
         
         .job-meta {
             font-size: 0.9rem;
-            color: #6B7280;
+            color: var(--accent-primary);
+            font-weight: 500;
             margin-bottom: 0.5rem;
         }
         
-        .achievement-list li {
-            position: relative;
-            padding-left: 1.25rem;
+        .profile-image {
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
         
-        .achievement-list li::before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            color: #3B82F6;
-            font-weight: bold;
+        .quote {
+            border-left: 3px solid var(--accent-secondary);
+            padding-left: 1rem;
+            font-style: italic;
+            color: var(--text-secondary);
         }
 
     </style>
 </head>
 <body class="text-gray-900">
 
-    <button onclick="window.print()" class="no-print fixed top-4 right-4 bg-blue-600 text-white px-5 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-colors z-50">
+    <button onclick="window.print()" class="no-print fixed top-4 right-4 bg-rose-600 text-white px-5 py-2 rounded-lg shadow-lg hover:bg-rose-700 transition-colors z-50">
         Download PDF
     </button>
 
     <!-- Page 1 -->
     <div class="resume-page">
-        <!-- Header -->
-        <header class="mb-8 flex items-center gap-8">
-            <img src="https://www.upwork.com/profile-portraits/c1RkV8V-oACySuaKdybDqV7JD27F-zeYdr301Yqt1B1FsECcOFXd7NJbpYc3IV0Q7B" 
-                 alt="Jesel Cura" 
-                 class="w-32 h-32 rounded-full object-cover border-4 border-gray-200 flex-shrink-0">
-            <div class="flex-grow">
-                <h1 class="text-4xl font-bold tracking-tight">Jesel Cura</h1>
-                <p class="text-lg text-gray-600 mt-1">Customer Success Manager • E-commerce & Real Estate Operations Specialist</p>
-                <div class="mt-4 flex items-center flex-wrap gap-x-4 gap-y-2">
-                    <div class="contact-item">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                        <span>808-481-4365</span>
+        <aside class="left-column">
+            <div class="flex flex-col h-full">
+                <div class="text-center mb-8">
+                    <img src="https://www.upwork.com/profile-portraits/c1RkV8V-oACySuaKdybDqV7JD27F-zeYdr301Yqt1B1FsECcOFXd7NJbpYc3IV0Q7B" 
+                         alt="Jesel Cura" 
+                         class="w-36 h-36 rounded-full object-cover mx-auto profile-image">
+                </div>
+
+                <section class="mb-8 section">
+                    <h2 class="section-title">Contact</h2>
+                    <div class="space-y-3">
+                        <div class="contact-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            <span>808-481-4365</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span>hello@jesscura.com</span>
+                        </div>
+                        <div class="contact-item">
+                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            <span>www.jesscura.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            <span>linkedin.com/in/jesscura</span>
+                        </div>
                     </div>
-                    <div class="contact-item">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                        <span>hello@jesscura.com</span>
-                    </div>
-                    <div class="contact-item">
-                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                        <span>www.jesscura.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                        <span>linkedin.com/in/jesscura</span>
-                    </div>
-                </div>
-            </div>
-        </header>
+                </section>
 
-        <!-- Professional Summary -->
-        <section class="mb-6 section">
-            <h2 class="section-title">Professional Summary</h2>
-            <p class="text-sm leading-relaxed text-gray-700">
-                A results-driven Operations and Customer Success Specialist with 10+ years of experience enhancing client satisfaction and operational efficiency for SaaS, e-commerce, and real estate businesses. Proven ability to develop scalable systems, lead support teams, and leverage technology to drive growth. Seeking to apply my expertise in a challenging new role.
-            </p>
-        </section>
-
-        <!-- Key Achievements -->
-        <section class="mb-6 section">
-            <h2 class="section-title">Key Achievements</h2>
-            <ul class="achievement-list text-sm text-gray-700 space-y-1">
-                <li>Increased customer satisfaction (CSAT) scores by 30% by implementing new QA frameworks and coaching initiatives for a 15-person support team.</li>
-                <li>Managed operations for a portfolio of 50+ residential properties, improving maintenance response times by 20% through optimized scheduling.</li>
-                <li>Boosted client retention by 15% for multiple e-commerce brands by developing proactive customer support SOPs and engagement strategies.</li>
-                <li>Maintained a 100% Job Success Score on Upwork across dozens of projects, reflecting consistent high-quality service and client satisfaction.</li>
-            </ul>
-        </section>
-
-        <!-- Work Experience -->
-        <section class="section">
-            <h2 class="section-title">Work Experience</h2>
-            <div class="space-y-5">
-                <div class="job-entry">
-                    <h3 class="job-title">Operations Generalist</h3>
-                    <p class="job-meta">Ethos Support | Remote | Jul 2023 – Present</p>
-                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                        <li>Streamline client operations, reducing onboarding time by 25% for new accounts.</li>
-                        <li>Develop and implement SOPs that have decreased issue resolution time by 40%.</li>
-                    </ul>
-                </div>
-                <div class="job-entry">
-                    <h3 class="job-title">Customer Success Manager</h3>
-                    <p class="job-meta">Freelance | Remote | Jun 2021 – Jun 2024</p>
-                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                        <li>Built strong client relationships, guiding them through onboarding to maximize platform value.</li>
-                        <li>Provided data-driven performance insights to drive customer retention and identify upsell opportunities.</li>
-                    </ul>
-                </div>
-                 <div class="job-entry">
-                    <h3 class="job-title">Front-End Web Designer</h3>
-                    <p class="job-meta">Freelance | Remote | Jun 2021 – Jun 2024</p>
-                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                        <li>Designed and developed responsive user interfaces for e-commerce and marketing websites.</li>
-                        <li>Collaborated with clients to create visually appealing layouts that aligned with brand identity.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Page 2 -->
-    <div class="resume-page page-break">
-        <!-- Work Experience (Continued) -->
-        <section class="mb-6 section">
-            <h2 class="section-title">Work Experience (Continued)</h2>
-            <div class="space-y-5">
-                <div class="job-entry">
-                    <h3 class="job-title">Maintenance Coordinator Assistant</h3>
-                    <p class="job-meta">E & G Real Estate Services | Remote | Jul 2019 – Present</p>
-                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                        <li>Manage maintenance for 50+ properties, ensuring 95% of work orders are closed within service level agreements (SLAs).</li>
-                        <li>Serve as primary liaison, improving tenant satisfaction ratings related to maintenance by 18%.</li>
-                    </ul>
-                </div>
-                <div class="job-entry">
-                    <h3 class="job-title">Online Store Manager / E‑commerce VA</h3>
-                    <p class="job-meta">Upwork | Remote | Jun 2019 – Present</p>
-                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                        <li>Managed end-to-end Shopify operations for stores with up to $500k in annual revenue.</li>
-                        <li>Developed support SOPs that reduced response times by 50% and increased positive reviews.</li>
-                    </ul>
-                </div>
-                 <div class="job-entry">
-                    <h3 class="job-title">Team Leader – Customer Support</h3>
-                    <p class="job-meta">Alorica | Remote | Mar 2015 – Oct 2017</p>
-                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
-                        <li>Led a 15+ agent team to become the top-performing group in the department for 3 consecutive quarters.</li>
-                        <li>Implemented QA frameworks that led to a 30% increase in CSAT scores.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Skills & Tools -->
-        <section class="mb-6 section">
-            <h2 class="section-title">Skills & Tools</h2>
-            <div class="grid grid-cols-2 gap-x-8 text-sm text-gray-700">
-                <div>
-                    <h4 class="font-semibold mb-1">Areas of Expertise</h4>
-                    <ul class="list-disc list-inside">
+                <section class="mb-8 section">
+                    <h2 class="section-title">Skills</h2>
+                    <ul class="text-sm space-y-1 text-gray-700">
                         <li>Customer Success & Onboarding</li>
                         <li>E-commerce Operations</li>
                         <li>Real Estate Operations</li>
                         <li>SOP Development</li>
-                        <li>Team Leadership</li>
+                        <li>Team Leadership & Training</li>
+                        <li>Client Relationship Management</li>
+                        <li>Front-End Web Design (HTML/CSS)</li>
                     </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-1">Tools & Technologies</h4>
-                     <ul class="list-disc list-inside">
+                </section>
+
+                <section class="mb-8 section">
+                    <h2 class="section-title">Tools</h2>
+                    <ul class="text-sm space-y-1 text-gray-700">
                         <li>Zendesk, Gorgias, Intercom</li>
                         <li>Shopify, WooCommerce</li>
                         <li>AppFolio, Buildium</li>
                         <li>Notion, Trello, Slack</li>
                         <li>Google Workspace</li>
                     </ul>
-                </div>
-            </div>
-        </section>
+                </section>
 
-        <!-- Education -->
-        <section class="section">
-            <h2 class="section-title">Education</h2>
-            <div class="text-sm">
-                <p class="font-semibold">Bachelor of Science in Information Technology</p>
-                <p class="text-gray-600">Holy Angel University</p>
+                <section class="section">
+                    <h2 class="section-title">Education</h2>
+                    <div class="text-sm">
+                        <p class="font-semibold">Bachelor of Science in IT</p>
+                        <p class="text-gray-600">Holy Angel University</p>
+                    </div>
+                </section>
             </div>
-        </section>
+        </aside>
+
+        <main class="right-column">
+            <header class="mb-8">
+                <h1 class="text-5xl font-bold tracking-tight text-gray-800">Jesel Cura</h1>
+                <p class="text-xl text-gray-500 mt-1">Customer Success Manager • E-commerce & Real Estate Operations Specialist</p>
+            </header>
+
+            <section class="mb-8 section">
+                <h2 class="section-title">Professional Summary</h2>
+                <p class="text-sm leading-relaxed text-gray-700">
+                    A results-driven Operations and Customer Success Specialist with 10+ years of experience enhancing client satisfaction and operational efficiency for SaaS, e-commerce, and real estate businesses. Proven ability to develop scalable systems, lead support teams, and leverage technology to drive growth. Seeking to apply my expertise in a challenging new role.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Work Experience</h2>
+                <div class="space-y-6">
+                    <div class="job-entry">
+                        <h3 class="job-title">Operations Generalist</h3>
+                        <p class="job-meta">Ethos Support | Jul 2023 – Present</p>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>Streamline client operations, reducing onboarding time by 25% for new accounts.</li>
+                            <li>Develop and implement SOPs that have decreased issue resolution time by 40%.</li>
+                        </ul>
+                    </div>
+                    <div class="job-entry">
+                        <h3 class="job-title">Customer Success Manager</h3>
+                        <p class="job-meta">Freelance | Jun 2021 – Jun 2024</p>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>Built strong client relationships, guiding them through onboarding to maximize platform value.</li>
+                            <li>Provided data-driven performance insights to drive customer retention and identify upsell opportunities.</li>
+                            <li>Achieved a 15% boost in client retention through proactive support and engagement strategies.</li>
+                        </ul>
+                    </div>
+                     <div class="job-entry">
+                        <h3 class="job-title">Front-End Web Designer</h3>
+                        <p class="job-meta">Freelance | Jun 2021 – Jun 2024</p>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>Designed and developed responsive user interfaces for e-commerce and marketing websites.</li>
+                            <li>Collaborated with clients to create visually appealing layouts that aligned with brand identity.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="resume-page page-break">
+        <main class="w-full">
+            <section class="mb-8 section">
+                <h2 class="section-title">Work Experience (Continued)</h2>
+                <div class="space-y-6">
+                    <div class="job-entry">
+                        <h3 class="job-title">Maintenance Coordinator Assistant</h3>
+                        <p class="job-meta">E & G Real Estate Services | Jul 2019 – Present</p>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>Manage maintenance for 50+ properties, ensuring 95% of work orders are closed within SLAs.</li>
+                            <li>Serve as primary liaison, improving tenant satisfaction ratings related to maintenance by 18%.</li>
+                        </ul>
+                    </div>
+                    <div class="job-entry">
+                        <h3 class="job-title">Online Store Manager / E‑commerce VA</h3>
+                        <p class="job-meta">Upwork | Jun 2019 – Present</p>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>Managed end-to-end Shopify operations for stores with up to $500k in annual revenue.</li>
+                            <li>Developed support SOPs that reduced response times by 50% and increased positive reviews.</li>
+                        </ul>
+                    </div>
+                     <div class="job-entry">
+                        <h3 class="job-title">Team Leader – Customer Support</h3>
+                        <p class="job-meta">Alorica | Mar 2015 – Oct 2017</p>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                            <li>Led a 15+ agent team to become the top-performing group in the department for 3 consecutive quarters.</li>
+                            <li>Implemented QA frameworks that led to a 30% increase in CSAT scores.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <h2 class="section-title">Client Feedback</h2>
+                 <div class="space-y-5">
+                    <div class="quote">
+                        <p>“Jes was a pleasure to work with… smart and able to strategize quickly, take action on that strategy, manage a team and train others.”</p>
+                        <cite class="block text-right text-sm text-gray-500 mt-1 not-italic">— Dropshipping Brand Owner</cite>
+                    </div>
+                     <div class="quote">
+                        <p>“Jess was easy to communicate with and was great during the onboarding phase... I would highly recommend hiring Jess.”</p>
+                        <cite class="block text-right text-sm text-gray-500 mt-1 not-italic">— Shopify Store Owner</cite>
+                    </div>
+                    <div class="quote">
+                        <p>"Incredibly reliable and organized. Jesel keeps our maintenance operations running smoothly and our tenants happy."</p>
+                        <cite class="block text-right text-sm text-gray-500 mt-1 not-italic">— Real Estate Client</cite>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 
 </body>
