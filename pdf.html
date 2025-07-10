@@ -13,6 +13,7 @@
             body { 
                 -webkit-print-color-adjust: exact; 
                 print-color-adjust: exact; 
+                margin: 0;
             }
             .no-print { 
                 display: none; 
@@ -23,6 +24,11 @@
             .resume-page {
                 box-shadow: none !important;
                 margin: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .job-entry, .section {
+                page-break-inside: avoid;
             }
         }
 
@@ -102,7 +108,7 @@
         <header class="mb-8 flex items-center gap-8">
             <img src="https://www.upwork.com/profile-portraits/c1RkV8V-oACySuaKdybDqV7JD27F-zeYdr301Yqt1B1FsECcOFXd7NJbpYc3IV0Q7B" 
                  alt="Jesel Cura" 
-                 class="w-32 h-32 rounded-full object-cover border-4 border-gray-200">
+                 class="w-32 h-32 rounded-full object-cover border-4 border-gray-200 flex-shrink-0">
             <div class="flex-grow">
                 <h1 class="text-4xl font-bold tracking-tight">Jesel Cura</h1>
                 <p class="text-lg text-gray-600 mt-1">Customer Success Manager • E-commerce & Real Estate Operations Specialist</p>
@@ -128,7 +134,7 @@
         </header>
 
         <!-- Professional Summary -->
-        <section class="mb-6">
+        <section class="mb-6 section">
             <h2 class="section-title">Professional Summary</h2>
             <p class="text-sm leading-relaxed text-gray-700">
                 A results-driven Operations and Customer Success Specialist with 10+ years of experience enhancing client satisfaction and operational efficiency for SaaS, e-commerce, and real estate businesses. Proven ability to develop scalable systems, lead support teams, and leverage technology to drive growth. Seeking to apply my expertise in a challenging new role.
@@ -136,7 +142,7 @@
         </section>
 
         <!-- Key Achievements -->
-        <section class="mb-6">
+        <section class="mb-6 section">
             <h2 class="section-title">Key Achievements</h2>
             <ul class="achievement-list text-sm text-gray-700 space-y-1">
                 <li>Increased customer satisfaction (CSAT) scores by 30% by implementing new QA frameworks and coaching initiatives for a 15-person support team.</li>
@@ -147,7 +153,7 @@
         </section>
 
         <!-- Work Experience -->
-        <section>
+        <section class="section">
             <h2 class="section-title">Work Experience</h2>
             <div class="space-y-5">
                 <div class="job-entry">
@@ -181,7 +187,7 @@
     <!-- Page 2 -->
     <div class="resume-page page-break">
         <!-- Work Experience (Continued) -->
-        <section class="mb-6">
+        <section class="mb-6 section">
             <h2 class="section-title">Work Experience (Continued)</h2>
             <div class="space-y-5">
                 <div class="job-entry">
@@ -212,7 +218,7 @@
         </section>
 
         <!-- Skills & Tools -->
-        <section class="mb-6">
+        <section class="mb-6 section">
             <h2 class="section-title">Skills & Tools</h2>
             <div class="grid grid-cols-2 gap-x-8 text-sm text-gray-700">
                 <div>
@@ -239,7 +245,7 @@
         </section>
 
         <!-- Education -->
-        <section>
+        <section class="section">
             <h2 class="section-title">Education</h2>
             <div class="text-sm">
                 <p class="font-semibold">Bachelor of Science in Information Technology</p>
