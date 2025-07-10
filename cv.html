@@ -1,0 +1,1235 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jesel Cura - Interactive Resume</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f8f6f3 0%, #f0ede8 50%, #f8f6f3 100%);
+            color: #2c3e50;
+            line-height: 1.6;
+            font-size: 14px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(212, 165, 116, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { top: 60%; left: 80%; animation-delay: 2s; }
+        .particle:nth-child(3) { top: 80%; left: 20%; animation-delay: 4s; }
+        .particle:nth-child(4) { top: 40%; left: 60%; animation-delay: 1s; }
+        .particle:nth-child(5) { top: 10%; left: 70%; animation-delay: 3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.3; }
+            50% { transform: translateY(-20px) translateX(10px); opacity: 0.8; }
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            background: white;
+            box-shadow: none;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+            animation: slideUp 1s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            background: #003285;
+            padding: 2rem 1.5rem;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 300px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 127, 62, 0.1) 0%, transparent 50%, rgba(255, 127, 62, 0.1) 100%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .profile-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(212, 165, 116, 0.3);
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .profile-photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            border: 4px solid #FF7F3E;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .profile-photo::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FF7F3E, #FF6B28, #FF7F3E);
+            background-size: 200% 200%;
+            animation: rotateGradient 3s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotateGradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .profile-photo:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .title {
+            font-size: 0.9rem;
+            color: #FF7F3E;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.4;
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease-out both;
+        }
+
+        .sidebar-section:nth-child(2) { animation-delay: 0.9s; }
+        .sidebar-section:nth-child(3) { animation-delay: 1.1s; }
+        .sidebar-section:nth-child(4) { animation-delay: 1.3s; }
+        .sidebar-section:nth-child(5) { animation-delay: 1.5s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sidebar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .sidebar-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #FF7F3E, transparent);
+            animation: expandLine 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes expandLine {
+            from { width: 0; }
+            to { width: 40px; }
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+            border-radius: 0;
+            background: transparent;
+            border: none;
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 127, 62, 0.1);
+            transform: translateX(5px);
+            box-shadow: none;
+        }
+
+        .contact-item i {
+            width: 20px;
+            margin-right: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .contact-item a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-item a:hover {
+            color: #FF7F3E;
+        }
+
+        .contact-item span {
+            color: white;
+        }
+
+        .skill-item {
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            transform: translateX(5px);
+        }
+
+        .skill-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+            color: white;
+        }
+
+        .skill-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #FF7F3E, #FF6B28);
+            border-radius: 3px;
+            transition: all 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: skillShine 2s ease-in-out infinite;
+        }
+
+        @keyframes skillShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .tool-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 127, 62, 0.3);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: white;
+        }
+
+        .tool-item:hover {
+            background: rgba(255, 127, 62, 0.2);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-color: #FF7F3E;
+        }
+
+        .education-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #FF7F3E;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .education-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+            box-shadow: none;
+        }
+
+        .degree {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.3rem;
+        }
+
+        .school {
+            font-size: 0.8rem;
+            color: #bdc3c7;
+            font-weight: 400;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: #f8f9fa;
+            position: relative;
+            margin-left: 300px;
+            padding: 2rem 3rem;
+            min-height: 100vh;
+        }
+
+        .header-main {
+            background: linear-gradient(135deg, #003285, #0041a3);
+            color: white;
+            padding: 4rem 0;
+            margin: -2rem -3rem 3rem -3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .header-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 127, 62, 0.1) 0%, transparent 50%, rgba(255, 127, 62, 0.1) 100%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-subtitle {
+            font-size: 1.3rem;
+            color: #FF7F3E;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .location {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+            animation: fadeInUp 1s ease-out both;
+        }
+
+        .section:nth-child(2) { animation-delay: 0.4s; }
+        .section:nth-child(3) { animation-delay: 0.6s; }
+        .section:nth-child(4) { animation-delay: 0.8s; }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #003285;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #FF7F3E, #FF6B28);
+            border-radius: 2px;
+            animation: expandLine 0.8s ease-out 0.3s both;
+        }
+
+        .wp-post {
+            background: white;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .wp-post-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #003285;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #FF7F3E;
+            padding-bottom: 0.5rem;
+        }
+
+        .summary {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #34495e;
+            text-align: justify;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f6f3, #f0ede8);
+            border-radius: 15px;
+            border-left: 4px solid #d4a574;
+            transition: all 0.3s ease;
+        }
+
+        .summary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .experience-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .experience-item {
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            border-left: 4px solid #FF7F3E;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .experience-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 127, 62, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .experience-item:hover::before {
+            left: 100%;
+        }
+
+        .experience-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-left-color: #FF6B28;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .job-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+            transition: color 0.3s ease;
+        }
+
+        .experience-item:hover .job-title {
+            color: #FF7F3E;
+        }
+
+        .company {
+            font-size: 0.9rem;
+            color: #FF7F3E;
+            font-weight: 600;
+        }
+
+        .duration {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 500;
+            text-align: right;
+            background: rgba(255, 127, 62, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .job-description {
+            list-style: none;
+            padding: 0;
+        }
+
+        .job-description li {
+            font-size: 0.85rem;
+            color: #34495e;
+            margin-bottom: 0.5rem;
+            padding-left: 1.2rem;
+            position: relative;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .job-description li::before {
+            content: '▶';
+            color: #FF7F3E;
+            font-size: 0.7rem;
+            position: absolute;
+            left: 0;
+            top: 0.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover .job-description li::before {
+            transform: translateX(3px);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+            border-left: 4px solid #FF7F3E;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-size: 4rem;
+            color: rgba(255, 127, 62, 0.2);
+            font-family: serif;
+        }
+
+        .testimonial:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .testimonial-text {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: #34495e;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+
+        .rating {
+            color: #FF7F3E;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .download-btn {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #FF7F3E, #FF6B28);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 25px rgba(255, 127, 62, 0.4);
+            transition: all 0.4s ease;
+            z-index: 1000;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 15px 40px rgba(212, 165, 116, 0.6);
+            animation: none;
+        }
+
+        .download-btn:active {
+            transform: translateY(-1px) scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 1024px) {
+            .page {
+                grid-template-columns: 280px 1fr;
+            }
+            
+            .sidebar {
+                width: 280px;
+            }
+            
+            .main-content {
+                margin-left: 280px;
+                padding: 2rem;
+            }
+            
+            .main-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .page {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+            
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                order: 1;
+                padding: 2rem 1.5rem;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+                order: 2;
+            }
+            
+            .header-main {
+                margin: 0 -1.5rem 2rem -1.5rem;
+                padding: 3rem 1.5rem;
+            }
+            
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .main-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .job-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .duration {
+                margin-top: 0.5rem;
+                text-align: left;
+            }
+            
+            .download-btn {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                top: auto;
+                padding: 12px 20px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .sidebar {
+                padding: 1.5rem 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .header-main {
+                margin: 0 -1rem 1.5rem -1rem;
+                padding: 2rem 1rem;
+            }
+            
+            .main-title {
+                font-size: 1.8rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+            
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-photo {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .download-btn,
+            .particles {
+                display: none;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                max-width: none;
+            }
+            
+            .sidebar {
+                background: #2c3e50 !important;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .experience-item,
+            .testimonial,
+            .summary {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <button class="download-btn" onclick="downloadPDF()">Download PDF</button>
+    
+    <div class="container" id="resume-content">
+        <div class="page">
+            <!-- Left Sidebar -->
+            <div class="sidebar">
+                <div class="profile-section">
+                    <div class="profile-photo">
+                        <img src="https://www.upwork.com/profile-portraits/c1RkV8V-oACySuaKdybDqV7JD27F-zeYdr301Yqt1B1FsECcOFXd7NJbpYc3IV0Q7B" alt="Jesel Cura">
+                    </div>
+                    <h1 class="name">Jesel Cura</h1>
+                    <p class="title">Expert Customer Success Manager<br>Ecommerce & Real Estate Specialist</p>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Contact</h3>
+                    <div class="contact-item">
+                        <i>📧</i>
+                        <a href="mailto:hello@jesscura.com">hello@jesscura.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <i>📞</i>
+                        <a href="tel:808-481-4365">808-481-4365</a>
+                    </div>
+                    <div class="contact-item">
+                        <i>📍</i>
+                        <span>Remote Worldwide</span>
+                    </div>
+                    <div class="contact-item">
+                        <i>🌐</i>
+                        <a href="https://www.jesscura.com">www.jesscura.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <i>💼</i>
+                        <a href="https://www.linkedin.com/in/jesscura/">LinkedIn Profile</a>
+                    </div>
+                    <div class="contact-item">
+                        <i>⭐</i>
+                        <a href="https://www.upwork.com/freelancers/~01fc4632607706f678">Upwork Profile</a>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Key Skills</h3>
+                    <div class="skill-item">
+                        <div class="skill-name">Customer Success Management</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="95%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">E-commerce Operations</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="90%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Team Leadership</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="85%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Process Optimization</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="90%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Front-End Development</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="88%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">UI/UX Design</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="85%"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Real Estate Operations</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" data-width="80%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Tools & Platforms</h3>
+                    <div class="tool-grid">
+                        <div class="tool-item">Zendesk</div>
+                        <div class="tool-item">Gorgias</div>
+                        <div class="tool-item">Shopify</div>
+                        <div class="tool-item">WooCommerce</div>
+                        <div class="tool-item">AppFolio</div>
+                        <div class="tool-item">Buildium</div>
+                        <div class="tool-item">Intercom</div>
+                        <div class="tool-item">DocuSign</div>
+                        <div class="tool-item">Notion</div>
+                        <div class="tool-item">Trello</div>
+                        <div class="tool-item">Slack</div>
+                        <div class="tool-item">Canva</div>
+                        <div class="tool-item">HTML5</div>
+                        <div class="tool-item">CSS3</div>
+                        <div class="tool-item">JavaScript</div>
+                        <div class="tool-item">React</div>
+                        <div class="tool-item">Bootstrap</div>
+                        <div class="tool-item">Figma</div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">Education</h3>
+                    <div class="education-item">
+                        <div class="degree">Bachelor of Science in Information Technology</div>
+                        <div class="school">Holy Angel University<br>Pampanga, Philippines<br>(Undergraduate)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <div class="header-main">
+                    <h1 class="main-title">Jesel Cura</h1>
+                    <p class="main-subtitle">Expert Customer Success Manager | Ecommerce & Real Estate Specialist</p>
+                    <p class="location">Remote Worldwide</p>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Professional Summary</h2>
+                    <p class="summary">
+                        Multidisciplinary Customer Success and Operations Specialist with over 10 years of experience managing client workflows, remote teams, and support systems in SaaS, e-commerce, and real estate. Currently working as Operations Generalist at Ethos Support (since July 2023) and Maintenance Coordinator Assistant at E & G Real Estate Services (since July 2019). Expert in SOP development, CRM optimization, vendor coordination, and proactive client communication. Top-rated on Upwork with a 100% Job Success Score and multiple 5-star reviews.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Professional Experience</h2>
+                    <div class="experience-grid">
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <div>
+                                    <div class="job-title">Operations Generalist</div>
+                                    <div class="company">Ethos Support</div>
+                                </div>
+                                <div class="duration">Jul 2023 – Present</div>
+                            </div>
+                            <ul class="job-description">
+                                <li>Streamlined client operations across e-commerce and real estate portfolios</li>
+                                <li>Created SOPs and optimized ticketing workflows via Zendesk/Gorgias</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <div>
+                                    <div class="job-title">Maintenance Coordinator Assistant</div>
+                                    <div class="company">E & G Real Estate Services</div>
+                                </div>
+                                <div class="duration">Jul 2019 – Present</div>
+                            </div>
+                            <ul class="job-description">
+                                <li>Managed scheduling and tracking of maintenance tasks for 50+ residential properties</li>
+                                <li>Facilitated communications between tenants, landlords, and vendors through AppFolio</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <div>
+                                    <div class="job-title">Front-End Web Designer</div>
+                                    <div class="company">Freelance</div>
+                                </div>
+                                <div class="duration">Jan 2020 – Present</div>
+                            </div>
+                            <ul class="job-description">
+                                <li>Designed and developed responsive websites using HTML5, CSS3, JavaScript, and modern frameworks</li>
+                                <li>Created user-friendly interfaces with focus on UX/UI principles and mobile-first design</li>
+                                <li>Collaborated with clients to translate business requirements into engaging web experiences</li>
+                                <li>Optimized website performance and implemented SEO best practices for improved visibility</li>
+                                <li>Maintained and updated existing websites while ensuring cross-browser compatibility</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <div>
+                                    <div class="job-title">Customer Success Manager</div>
+                                    <div class="company">Freelance</div>
+                                </div>
+                                <div class="duration">Jun 2021 – Jun 2024</div>
+                            </div>
+                            <ul class="job-description">
+                                <li>Built strong client relationships and guided customers through platform onboarding processes</li>
+                                <li>Monitored performance metrics to drive retention and growth with data-driven insights</li>
+                                <li>Identified upsell opportunities while ensuring customers maximized platform value</li>
+                                <li>Provided ongoing support and customer advocacy with proactive problem-solving approach</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <div>
+                                    <div class="job-title">Online Store Manager / E-commerce VA</div>
+                                    <div class="company">Upwork</div>
+                                </div>
+                                <div class="duration">Jun 2019 – Present</div>
+                            </div>
+                            <ul class="job-description">
+                                <li>Managed Shopify/WooCommerce operations: product uploads, inventory control, and fulfillment</li>
+                                <li>Developed customer support and marketing SOPs to improve engagement and sales</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <div>
+                                    <div class="job-title">Team Leader – Customer Support</div>
+                                    <div class="company">Alorica</div>
+                                </div>
+                                <div class="duration">Mar 2015 – Oct 2017</div>
+                            </div>
+                            <ul class="job-description">
+                                <li>Supervised a 15+ person support team with QA frameworks and coaching initiatives</li>
+                                <li>Achieved a 30% increase in CSAT through performance optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Client Testimonials</h2>
+                    <div class="testimonial-grid">
+                        <div class="testimonial">
+                            <p class="testimonial-text">Jes was a pleasure to work with… smart and able to strategize quickly, take action on that strategy, manage a team and train others.</p>
+                            <div class="testimonial-author">
+                                <span class="rating">★★★★★ 4.7/5</span> — Dropshipping Brand Owner
+                            </div>
+                        </div>
+                        
+                        <div class="testimonial">
+                            <p class="testimonial-text">Jess was easy to communicate with and was great during the onboarding phase... I would highly recommend hiring Jess.</p>
+                            <div class="testimonial-author">
+                                <span class="rating">★★★★★ 4.9/5</span> — Shopify Store Owner
+                            </div>
+                        </div>
+                        
+                        <div class="testimonial">
+                            <p class="testimonial-text">Jesel killed it. Helped me out a ton with my Amazon business!</p>
+                            <div class="testimonial-author">
+                                <span class="rating">★★★★★ 5.0/5</span> — Amazon Product Management Client
+                            </div>
+                        </div>
+                        
+                        <div class="testimonial">
+                            <p class="testimonial-text">Got work done as needed in a timely manner. Would recommend.</p>
+                            <div class="testimonial-author">
+                                <span class="rating">★★★★★ 5.0/5</span> — Short-Term Upwork VA
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate skill bars when page loads
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const skillBars = document.querySelectorAll('.skill-progress');
+                skillBars.forEach((bar, index) => {
+                    setTimeout(() => {
+                        const width = bar.getAttribute('data-width');
+                        bar.style.width = width;
+                    }, index * 200);
+                });
+            }, 1000);
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.section, .experience-item, .testimonial').forEach(el => {
+            observer.observe(el);
+        });
+
+        function downloadPDF() {
+            const element = document.getElementById('resume-content');
+            const opt = {
+                margin: 0.3,
+                filename: 'Jesel_Cura_Interactive_Resume.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true,
+                    allowTaint: true
+                },
+                jsPDF: { 
+                    unit: 'in', 
+                    format: 'letter', 
+                    orientation: 'portrait' 
+                }
+            };
+
+            // Show loading state
+            const btn = document.querySelector('.download-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Generating...';
+            btn.disabled = true;
+            btn.style.background = 'linear-gradient(135deg, #7f8c8d, #95a5a6)';
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Reset button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.style.background = 'linear-gradient(135deg, #d4a574, #c19660)';
+            }).catch((error) => {
+                console.error('PDF generation error:', error);
+                // Reset button on error
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.style.background = 'linear-gradient(135deg, #d4a574, #c19660)';
+                alert('Error generating PDF. Please try again.');
+            });
+        }
+
+        // Add smooth scrolling for better UX
+        document.documentElement.style.scrollBehavior = 'smooth';
+
+        // Add scroll-triggered animations for better engagement
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.experience-item, .testimonial, .section');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Initialize animations on load
+        setTimeout(animateOnScroll, 500);
+
+        // Add interactive hover effects for better user experience
+        document.querySelectorAll('.experience-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Enhanced testimonial interactions
+        document.querySelectorAll('.testimonial').forEach(testimonial => {
+            testimonial.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) rotate(1deg)';
+                this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.2)';
+            });
+            
+            testimonial.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) rotate(0deg)';
+                this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'95d391d8645f4045',t:'MTc1MjE4NzI5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
