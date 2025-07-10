@@ -80,10 +80,8 @@
         }
 
         .page {
-            display: grid;
-            grid-template-columns: 300px 1fr;
+            display: flex;
             min-height: 100vh;
-            gap: 0;
         }
 
         /* Left Sidebar */
@@ -91,11 +89,8 @@
             background: #003285;
             padding: 2rem 1.5rem;
             color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
             width: 300px;
+            flex-shrink: 0;
             overflow-y: auto;
             z-index: 100;
         }
@@ -379,7 +374,7 @@
         .main-content {
             background: #f8f9fa;
             position: relative;
-            margin-left: 300px;
+            flex: 1;
             padding: 2rem 3rem;
             min-height: 100vh;
         }
@@ -699,16 +694,11 @@
 
         /* Responsive Design */
         @media screen and (max-width: 1024px) {
-            .page {
-                grid-template-columns: 280px 1fr;
-            }
-            
             .sidebar {
                 width: 280px;
             }
             
             .main-content {
-                margin-left: 280px;
                 padding: 2rem;
             }
             
@@ -719,22 +709,18 @@
 
         @media screen and (max-width: 768px) {
             .page {
-                grid-template-columns: 1fr;
+                flex-direction: column;
                 min-height: auto;
             }
             
             .sidebar {
-                position: relative;
                 width: 100%;
-                height: auto;
-                order: 1;
+                flex-shrink: 1;
                 padding: 2rem 1.5rem;
             }
             
             .main-content {
-                margin-left: 0;
                 padding: 1.5rem;
-                order: 2;
             }
             
             .header-main {
@@ -1231,5 +1217,5 @@
             });
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'95d391d8645f4045',t:'MTc1MjE4NzI5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'95d396dd416efee7',t:'MTc1MjE4NzUwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
