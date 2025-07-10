@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jesel Cura - Interactive Resume</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --text-light: #FCEAE8;
+            --accent-primary: #FE7061;
+            --accent-secondary: #FFA24C;
+            --accent-tertiary: #FE5E68;
+        }
+
+        @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .no-print { display: none; }
+            .glass-card { box-shadow: none; border: 1px solid #ddd; }
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000000;
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Card Effect */
+        .glass-card {
+            background: rgba(30, 30, 30, 0.5); /* Semi-transparent background */
+            backdrop-filter: blur(12px); /* Frosted glass effect */
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(254, 112, 97, 0.1);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 30px 0 rgba(254, 112, 97, 0.25);
+            border-color: rgba(254, 112, 97, 0.4);
+        }
+        
+        /* Interactive Skill Tag */
+        .skill-tag {
+            background-color: rgba(254, 112, 97, 0.1);
+            border: 1px solid rgba(254, 112, 97, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background-color: rgba(254, 112, 97, 0.2);
+            border-color: var(--accent-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* Interactive Timeline for Experience */
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            padding-bottom: 2rem;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 5px;
+            bottom: -5px;
+            width: 2px;
+            background: rgba(254, 94, 104, 0.3);
+        }
+        
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 22px;
+            width: 22px;
+            border: 3px solid rgba(254, 94, 104, 0.3);
+            border-radius: 50%;
+            background: #111111;
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover .timeline-dot {
+            border-color: var(--accent-tertiary);
+            transform: scale(1.1);
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            border: 4px solid transparent;
+            background: linear-gradient(45deg, #222, #000) padding-box,
+                        linear-gradient(45deg, var(--accent-primary), var(--accent-tertiary)) border-box;
+            transition: all 0.4s ease;
+        }
+        .profile-image:hover {
+            transform: scale(1.05) rotate(3deg);
+            box-shadow: 0 0 40px rgba(254, 112, 97, 0.4);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <button onclick="window.print()" class="no-print fixed top-4 right-4 bg-rose-600 text-white px-5 py-2 rounded-lg shadow-lg hover:bg-rose-700 transition-colors z-50">
+        Download PDF
+    </button>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Column -->
+        <aside class="lg:col-span-1 space-y-8">
+            <!-- Profile Card -->
+            <div class="glass-card p-8 text-center">
+                <img 
+                    src="https://www.upwork.com/profile-portraits/c1RkV8V-oACySuaKdybDqV7JD27F-zeYdr301Yqt1B1FsECcOFXd7NJbpYc3IV0Q7B" 
+                    alt="Professional headshot of Jesel Cura"
+                    class="w-40 h-40 mx-auto object-cover profile-image"
+                    onerror="this.onerror=null;this.src='https://placehold.co/160x160/1B263B/F0F5FF?text=Error';">
+                
+                <h1 class="text-3xl font-bold mt-6 text-white">Jesel Cura</h1>
+                <p class="text-md text-gray-300 mt-1">Customer Success Manager</p>
+                <p class="text-md text-gray-300">E‑commerce & Real Estate Ops</p>
+                
+                <div class="mt-6 pt-6 border-t border-gray-700/50 space-y-4 text-sm">
+                    <a href="mailto:hello@jesscura.com" class="flex items-center justify-center gap-3 text-gray-300 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" style="color: var(--accent-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <span>hello@jesscura.com</span>
+                    </a>
+                    <a href="tel:808-481-4365" class="flex items-center justify-center gap-3 text-gray-300 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" style="color: var(--accent-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                        <span>808-481-4365</span>
+                    </a>
+                    <div class="flex items-center justify-center gap-3 text-gray-300">
+                        <svg class="w-5 h-5" style="color: var(--accent-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span>Remote Worldwide</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/jesscura/" target="_blank" class="flex items-center justify-center gap-3 text-gray-300 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" style="color: var(--accent-primary);" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        <span>LinkedIn Profile</span>
+                    </a>
+                    <a href="https://www.upwork.com/freelancers/~01fc4632607706f678" target="_blank" class="flex items-center justify-center gap-3 text-gray-300 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" style="color: var(--accent-primary);" fill="currentColor" viewBox="0 0 24 24"><path d="M16.1 7.3a3.5 3.5 0 00-3.5 3.5H11V8.2c0-2.6-1.7-4.2-4.1-4.2a4.2 4.2 0 00-4 4.2v5.1H6v-5.1c0-1.2.7-2.1 2-2.1s2 .9 2 2.1v5.1h2.9v-4.3c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5v4.3h2.9V10c0-2.6-1.6-3.5-3.6-2.7z"/></svg>
+                        <span>Upwork Profile</span>
+                    </a>
+                    <a href="https://www.jesscura.com" target="_blank" class="flex items-center justify-center gap-3 text-gray-300 hover:text-white transition-colors">
+                         <svg class="w-5 h-5" style="color: var(--accent-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        <span>www.jesscura.com</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Skills Card -->
+            <div class="glass-card p-8">
+                <h3 class="text-xl font-bold text-white mb-4">Areas of Expertise</h3>
+                <div class="space-y-3 text-sm">
+                    <p><strong>Customer Success:</strong> Onboarding, Retention, CSAT Improvement, Proactive Support, Upselling</p>
+                    <p><strong>E-commerce Ops:</strong> Shopify/WooCommerce, Inventory Management, Order Fulfillment, Supplier Coordination</p>
+                    <p><strong>Real Estate Ops:</strong> Property Maintenance Coordination, Tenant/Vendor Relations, Lease Administration</p>
+                    <p><strong>Operations:</strong> SOP Development, Workflow Automation, Team Leadership, QA Frameworks</p>
+                </div>
+            </div>
+
+            <!-- Tools Card -->
+            <div class="glass-card p-8">
+                <h3 class="text-xl font-bold text-white mb-4">Tools & Technologies</h3>
+                <div class="flex flex-wrap gap-2">
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Zendesk</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Gorgias</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Intercom</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Shopify</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">WooCommerce</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Amazon Seller Central</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">AppFolio</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Buildium</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Notion</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Trello</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Slack</span>
+                    <span class="skill-tag px-3 py-1 rounded-full text-sm">Google Workspace</span>
+                </div>
+            </div>
+             <!-- Education Card -->
+            <div class="glass-card p-8">
+                <h3 class="text-xl font-bold text-white mb-4">Education & Certifications</h3>
+                <div class="text-sm">
+                    <p class="font-semibold">Bachelor of Science in Information Technology</p>
+                    <p class="text-gray-400">Holy Angel University</p>
+                    <p class="mt-2 text-gray-400">Continuously pursuing new certifications in Customer Success and Project Management.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Column -->
+        <main class="lg:col-span-2 space-y-8">
+            <!-- Summary Card -->
+            <div class="glass-card p-8">
+                <h2 class="section-title">Professional Summary</h2>
+                <p class="text-md leading-relaxed text-gray-300">
+                    A results-driven Operations and Customer Success Specialist with 10+ years of experience enhancing client satisfaction and operational efficiency for SaaS, e-commerce, and real estate businesses. Proven ability to develop scalable systems, lead support teams, and leverage technology to drive growth. Seeking to apply my expertise in a challenging new role.
+                </p>
+            </div>
+            
+            <!-- Key Achievements Card -->
+            <div class="glass-card p-8">
+                <h2 class="section-title">Key Achievements</h2>
+                <ul class="list-disc list-inside text-md text-gray-300 space-y-2">
+                    <li>Increased customer satisfaction (CSAT) scores by 30% by implementing new QA frameworks and coaching initiatives for a 15-person support team.</li>
+                    <li>Managed operations for a portfolio of 50+ residential properties, improving maintenance response times by 20% through optimized scheduling.</li>
+                    <li>Boosted client retention by 15% for multiple e-commerce brands by developing proactive customer support SOPs and engagement strategies.</li>
+                    <li>Maintained a 100% Job Success Score on Upwork across dozens of projects, reflecting consistent high-quality service and client satisfaction.</li>
+                </ul>
+            </div>
+
+            <!-- Experience Card -->
+            <div class="glass-card p-8">
+                <h2 class="section-title">Work Experience</h2>
+                <div class="relative">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-lg font-semibold text-white">Operations Generalist</h3>
+                        <p class="text-sm text-gray-400 mb-2">Ethos Support | Remote | Jul 2023 – Present</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Streamline client operations, reducing onboarding time by 25% for new accounts.</li>
+                            <li>Develop and implement SOPs that have decreased issue resolution time by 40%.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-lg font-semibold text-white">Customer Success Manager</h3>
+                        <p class="text-sm text-gray-400 mb-2">Freelance | Remote | Jun 2021 – Jun 2024</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Built strong client relationships, guiding them through onboarding to maximize platform value.</li>
+                            <li>Provided data-driven performance insights to drive customer retention and identify upsell opportunities.</li>
+                        </ul>
+                    </div>
+                     <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-lg font-semibold text-white">Front-End Web Designer</h3>
+                        <p class="text-sm text-gray-400 mb-2">Freelance | Remote | Jun 2021 – Jun 2024</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Designed and developed responsive user interfaces for e-commerce and marketing websites.</li>
+                            <li>Collaborated with clients to create visually appealing layouts that aligned with brand identity.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-lg font-semibold text-white">Maintenance Coordinator Assistant</h3>
+                        <p class="text-sm text-gray-400 mb-2">E & G Real Estate Services | Jul 2019 – Present</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Manage maintenance for 50+ properties, ensuring 95% of work orders are closed within SLAs.</li>
+                            <li>Serve as primary liaison, improving tenant satisfaction ratings related to maintenance by 18%.</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-lg font-semibold text-white">Online Store Manager / E‑commerce VA</h3>
+                        <p class="text-sm text-gray-400 mb-2">Upwork | Jun 2019 – Present</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Managed end-to-end Shopify operations for stores with up to $500k in annual revenue.</li>
+                            <li>Developed support SOPs that reduced response times by 50% and increased positive reviews.</li>
+                        </ul>
+                    </div>
+                     <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-lg font-semibold text-white">Team Leader – Customer Support</h3>
+                        <p class="text-sm text-gray-400 mb-2">Alorica | Mar 2015 – Oct 2017</p>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Led a 15+ agent team to become the top-performing group in the department for 3 consecutive quarters.</li>
+                            <li>Implemented QA frameworks that led to a 30% increase in CSAT scores.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Client Feedback Card -->
+            <div class="glass-card p-8">
+                <h2 class="section-title">Client Feedback</h2>
+                 <div class="space-y-6">
+                    <blockquote class="border-l-4 pl-4" style="border-color: var(--accent-tertiary);">
+                        <p class="italic text-gray-300">“Jes was a pleasure to work with… smart and able to strategize quickly, take action on that strategy, manage a team and train others.”</p>
+                        <cite class="block text-right text-sm text-gray-400 mt-2 not-italic">— Dropshipping Brand Owner</cite>
+                    </blockquote>
+                     <blockquote class="border-l-4 pl-4" style="border-color: var(--accent-tertiary);">
+                        <p class="italic text-gray-300">“Jess was easy to communicate with and was great during the onboarding phase... I would highly recommend hiring Jess.”</p>
+                        <cite class="block text-right text-sm text-gray-400 mt-2 not-italic">— Shopify Store Owner</cite>
+                    </blockquote>
+                    <blockquote class="border-l-4 pl-4" style="border-color: var(--accent-tertiary);">
+                        <p class="italic text-gray-300">"Incredibly reliable and organized. Jesel keeps our maintenance operations running smoothly and our tenants happy."</p>
+                        <cite class="block text-right text-sm text-gray-400 mt-2 not-italic">— Real Estate Client</cite>
+                    </blockquote>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+</body>
+</html>
