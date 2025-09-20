@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FAQ with CSV Import - Canva Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Smooth accordion height animation */
+    .accordion-content {
+      transition: height 250ms ease, opacity 200ms ease;
+      overflow: hidden;
+      opacity: 0;
+      height: 0;
+    }
+    .accordion-content.open {
+      opacity: 1;
+    }
+    /* Minimal scrollbar for better polish */
+    .thin-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+    .thin-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 999px; }
+    .thin-scroll::-webkit-scrollbar-track { background: transparent; }
+    /* Subtle shimmering border effect for cards */
+    .frost-card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+    .badge { display:inline-flex; align-items:center; gap:.5rem; padding:.25rem .6rem; border-radius:999px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); }
+    .group-card { border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.08); border-radius:1rem; overflow:hidden; }
+    .group-head { display:flex; align-items:center; justify-content:space-between; padding:.9rem 1rem; }
+    .group-body { padding:.25rem .75rem 1rem; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-white antialiased">
+  <div class="max-w-5xl mx-auto px-6 py-12">
+    <!-- Header -->
+    <header class="mb-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/20 shadow-sm">
+        <span class="text-xs">✨</span>
+        <span class="text-xs tracking-wide">Canva Code • FAQ</span>
+      </div>
+      <h1 class="mt-4 text-4xl md:text-5xl font-bold leading-tight">
+        Frequently Asked Questions
+      </h1>
+      <p class="mt-3 text-white/85 max-w-2xl">
+        Click a question to expand. Use the view toggle to switch between a flat list or a pivot grouped by brand → category → Q&A. Import more with CSV or paste.
+      </p>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Accordion Column -->
+      <section class="lg:col-span-2 frost-card rounded-2xl p-1">
+        <div class="rounded-2xl p-6 bg-gradient-to-b from-white/10 to-white/5 thin-scroll">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">FAQ</h2>
+            <div class="flex items-center gap-2">
+              <div class="inline-flex bg-white/10 border border-white/20 rounded-lg overflow-hidden">
+                <button id="viewFlat" class="px-3 py-2 text-sm transition bg-white/20">Flat</button>
+                <button id="viewPivot" class="px-3 py-2 text-sm transition hover:bg-white/15">Pivot</button>
+              </div>
+              <button id="expandAllBtn" class="px-3 py-2 text-sm rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 transition">
+                Expand all
+              </button>
+              <button id="collapseAllBtn" class="px-3 py-2 text-sm rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 transition">
+                Collapse all
+              </button>
+            </div>
+          </div>
+
+          <ul id="faqList" class="space-y-3">
+            <!-- Items injected here -->
+          </ul>
+
+          <div id="pivotView" class="hidden space-y-4">
+            <!-- Pivot groups injected here -->
+          </div>
+
+          <p id="emptyState" class="hidden text-center text-white/80 py-10">
+            No questions yet. Import from CSV or add your own! The pivot view will group by brand → category.
+          </p>
+        </div>
+      </section>
+
+      <!-- Import Column -->
+      <aside class="frost-card rounded-2xl p-1">
+        <div class="rounded-2xl p-6 bg-gradient-to-b from-white/10 to-white/5">
+          <h3 class="text-lg font-semibold">Import questions (CSV)</h3>
+          <p class="mt-2 text-sm text-white/80">
+            Format: brand,category,question,answer (first row can be headers).
+          </p>
+
+          <!-- Drop zone -->
+          <div id="dropZone" class="mt-4 rounded-xl border border-dashed border-white/30 bg-white/10 hover:bg-white/15 transition p-4 text-center cursor-pointer">
+            <div class="flex items-center justify-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" class="opacity-90" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 16V4M12 4l-4 4M12 4l4 4"></path>
+                <rect x="3" y="14" width="18" height="7" rx="2" ry="2"></rect>
+              </svg>
+              <span class="text-sm">Drag & drop CSV here or click to select</span>
+            </div>
+            <input id="fileInput" type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain" class="hidden" />
+          </div>
+
+          <!-- Paste area -->
+          <label for="csvText" class="mt-5 block text-sm font-medium">Or paste CSV:</label>
+          <textarea id="csvText" class="mt-2 w-full h-28 rounded-xl p-3 text-sm text-white/90 placeholder-white/50 bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/40 resize-y"
+            placeholder="brand,category,question,answer
+Acme,Shipping,What is your return policy?,You can return items within 30 days.
+Globex,Billing,Do you ship internationally?,Yes, we ship worldwide."></textarea>
+
+          <!-- Options -->
+          <div class="mt-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 flex-wrap">
+              <label class="flex items-center gap-2">
+                <input id="replaceToggle" type="checkbox" class="w-4 h-4 rounded border-white/30 bg-white/10">
+                <span class="text-sm">Replace existing</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input id="autoOpenToggle" type="checkbox" class="w-4 h-4 rounded border-white/30 bg-white/10">
+                <span class="text-sm">Open FAQ-only page after import</span>
+              </label>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="importBtn" class="px-3 py-2 text-sm rounded-lg bg-emerald-400 text-emerald-950 hover:bg-emerald-300 transition font-medium">
+                Import CSV
+              </button>
+              <button id="clearInputsBtn" class="px-3 py-2 text-sm rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 transition">
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Sample & Status -->
+          <div class="mt-4 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-4">
+              <button id="downloadSampleBtn" class="text-sm underline underline-offset-4 decoration-white/50 hover:decoration-white">
+                Download sample CSV
+              </button>
+              <button id="openCleanBtn" class="text-sm px-3 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 transition">
+                Open FAQ-only page
+              </button>
+            </div>
+            <span id="status" class="text-xs text-white/80"></span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 px-4 py-3 rounded-xl bg-emerald-400 text-emerald-950 shadow-lg opacity-0 pointer-events-none transition">
+      Imported successfully!
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-white/70 text-sm">
+      Built with ❤️ by Canva Code
+    </footer>
+  </div>
+
+  <script>
+    // State
+    let faqs = [
+      { id: "q1", brand: "Acme", category: "General", question: "What is this FAQ page for?", answer: "It’s a simple, elegant FAQ with an accordion. You can import more questions using CSV." },
+      { id: "q2", brand: "Acme", category: "Getting Started", question: "How do I import questions?", answer: "Use the import panel: drag in a CSV, select a file, or paste CSV text, then click Import." },
+      { id: "q3", brand: "Globex", category: "Format", question: "What CSV format is supported?", answer: "Four columns: brand, category, question, answer. The first row can optionally be headers." },
+    ];
+
+    const faqList = document.getElementById("faqList");
+    const pivotView = document.getElementById("pivotView");
+    const emptyState = document.getElementById("emptyState");
+    const expandAllBtn = document.getElementById("expandAllBtn");
+    const collapseAllBtn = document.getElementById("collapseAllBtn");
+    const viewFlat = document.getElementById("viewFlat");
+    const viewPivot = document.getElementById("viewPivot");
+
+    // Import elements
+    const dropZone = document.getElementById("dropZone");
+    const fileInput = document.getElementById("fileInput");
+    const csvText = document.getElementById("csvText");
+    const replaceToggle = document.getElementById("replaceToggle");
+    const importBtn = document.getElementById("importBtn");
+    const clearInputsBtn = document.getElementById("clearInputsBtn");
+    const statusEl = document.getElementById("status");
+    const downloadSampleBtn = document.getElementById("downloadSampleBtn");
+    const openCleanBtn = document.getElementById('openCleanBtn');
+    const autoOpenToggle = document.getElementById('autoOpenToggle');
+    const toast = document.getElementById("toast");
+
+    // Render FAQ items
+    let currentView = 'flat';
+
+    function renderFaqs() {
+      faqList.innerHTML = "";
+      pivotView.innerHTML = "";
+      if (!faqs.length) {
+        emptyState.classList.remove("hidden");
+        return;
+      }
+      emptyState.classList.add("hidden");
+
+      if (currentView === 'flat') {
+        faqList.classList.remove('hidden');
+        pivotView.classList.add('hidden');
+        for (const item of faqs) {
+          const li = document.createElement("li");
+          li.className = "rounded-xl border border-white/20 bg-white/10 overflow-hidden";
+
+          li.innerHTML = `
+            <button data-id="${item.id}" class="w-full flex items-center justify-between gap-4 px-4 py-4 hover:bg-white/10 transition">
+              <span class="text-left font-medium">${escapeHTML(item.question)}</span>
+              <span class="hidden md:inline-flex items-center gap-2 text-xs opacity-80">
+                ${item.brand ? `<span class='badge'>🏷️ ${escapeHTML(item.brand)}</span>` : ''}
+                ${item.category ? `<span class='badge'>📂 ${escapeHTML(item.category)}</span>` : ''}
+              </span>
+              <span class="shrink-0 inline-flex w-8 h-8 items-center justify-center rounded-full bg-white/10 border border-white/20">
+                <svg class="chev transition -rotate-90" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"></path>
+                </svg>
+              </span>
+            </button>
+            <div class="accordion-content px-4" id="content-${item.id}" aria-hidden="true">
+              <div class="py-4 border-t border-white/15 text-white/90 leading-relaxed">
+                ${formatAnswerHTML(item.answer)}
+              </div>
+            </div>
+          `;
+          faqList.appendChild(li);
+        }
+      } else {
+        faqList.classList.add('hidden');
+        pivotView.classList.remove('hidden');
+        renderPivot();
+      }
+    }
+
+    // Escape plain text for safety
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // Allow basic newlines in answers
+    function formatAnswerHTML(str) {
+      const safe = escapeHTML(str);
+      return safe.replace(/\n/g, "<br>");
+    }
+
+    // Accordion interactions
+    faqList.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-id]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-id");
+      toggleItem(id, btn);
+    });
+
+    function renderPivot() {
+      // Group by brand then category
+      const byBrand = {};
+      for (const it of faqs) {
+        const brand = it.brand || 'Unassigned';
+        const cat = it.category || 'General';
+        byBrand[brand] = byBrand[brand] || {};
+        byBrand[brand][cat] = byBrand[brand][cat] || [];
+        byBrand[brand][cat].push(it);
+      }
+      const brandNames = Object.keys(byBrand).sort(Intl.Collator().compare);
+      for (const b of brandNames) {
+        const brandCard = document.createElement('div');
+        brandCard.className = 'group-card';
+        const catMap = byBrand[b];
+        const catNames = Object.keys(catMap).sort(Intl.Collator().compare);
+        brandCard.innerHTML = `
+          <div class="group-head">
+            <div class="flex items-center gap-2">
+              <span class="badge"><span>🏷️</span><span class="font-semibold">${escapeHTML(b)}</span></span>
+              <span class="text-xs opacity-80">${catNames.length} categor${catNames.length===1?'y':'ies'}</span>
+            </div>
+          </div>
+          <div class="group-body space-y-3"></div>
+        `;
+        const body = brandCard.querySelector('.group-body');
+
+        for (const c of catNames) {
+          const items = catMap[c];
+          const section = document.createElement('div');
+          section.className = 'rounded-xl border border-white/15 bg-white/5';
+          const secId = 'sec-' + b.replace(/\W+/g,'_') + '-' + c.replace(/\W+/g,'_');
+          section.innerHTML = `
+            <button data-sec="${secId}" class="w-full flex items-center justify-between px-4 py-3">
+              <div class="flex items-center gap-2">
+                <span class="badge"><span>📂</span><span>${escapeHTML(c)}</span></span>
+                <span class="text-xs opacity-80">${items.length} item${items.length===1?'':'s'}</span>
+              </div>
+              <svg class="chev transition -rotate-90" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <div class="accordion-content px-2" id="${secId}" aria-hidden="true">
+              <div class="py-3 border-t border-white/10 space-y-2">
+                ${items.map(it => `
+                  <div class=\"rounded-lg border border-white/10 bg-white/5 overflow-hidden\">
+                    <button data-id=\"${it.id}\" class=\"w-full flex items-center justify-between gap-4 px-3 py-3 hover:bg-white/10 transition\">
+                      <span class=\"text-left\"><span class=\"text-sm font-medium\">${escapeHTML(it.question)}</span></span>
+                      <span class=\"shrink-0 inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/10 border border-white/20\">
+                        <svg class=\"chev transition -rotate-90\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M6 9l6 6 6-6\"></path></svg>
+                      </span>
+                    </button>
+                    <div class=\"accordion-content px-3\" id=\"content-${it.id}\" aria-hidden=\"true\">
+                      <div class=\"py-3 border-t border-white/10 text-white/90 leading-relaxed\">${formatAnswerHTML(it.answer)}</div>
+                    </div>
+                  </div>`).join('')}
+              </div>
+            </div>
+          `;
+          body.appendChild(section);
+        }
+        pivotView.appendChild(brandCard);
+      }
+    }
+
+    // Pivot accordion handlers
+    pivotView.addEventListener('click', (e) => {
+      const secBtn = e.target.closest('button[data-sec]');
+      if (secBtn) {
+        const id = secBtn.getAttribute('data-sec');
+        const content = document.getElementById(id);
+        const icon = secBtn.querySelector('.chev');
+        const isOpen = content.classList.contains('open');
+        if (isOpen) { animateClose(content); icon.classList.add('-rotate-90'); }
+        else { animateOpen(content); icon.classList.remove('-rotate-90'); }
+        return;
+      }
+      const qBtn = e.target.closest('button[data-id]');
+      if (qBtn) {
+        const id = qBtn.getAttribute('data-id');
+        toggleItem(id, qBtn);
+      }
+    });
+
+    function toggleItem(id, btnEl) {
+      const content = document.getElementById("content-" + id);
+      const icon = btnEl.querySelector(".chev");
+      const isOpen = content.classList.contains("open");
+
+      if (isOpen) {
+        animateClose(content);
+        icon.classList.add("-rotate-90");
+      } else {
+        animateOpen(content);
+        icon.classList.remove("-rotate-90");
+      }
+    }
+
+    function animateOpen(el) {
+      el.classList.add("open");
+      el.style.height = "auto";
+      const h = el.scrollHeight + "px";
+      el.style.height = "0px";
+      requestAnimationFrame(() => {
+        el.style.height = h;
+        el.setAttribute("aria-hidden", "false");
+      });
+      el.addEventListener("transitionend", function tidy(e) {
+        if (e.propertyName === "height") {
+          el.style.height = "auto";
+          el.removeEventListener("transitionend", tidy);
+        }
+      });
+    }
+
+    function animateClose(el) {
+      el.style.height = el.scrollHeight + "px";
+      requestAnimationFrame(() => {
+        el.style.height = "0px";
+        el.setAttribute("aria-hidden", "true");
+      });
+      el.addEventListener("transitionend", function tidy(e) {
+        if (e.propertyName === "height") {
+          el.classList.remove("open");
+          el.removeEventListener("transitionend", tidy);
+        }
+      });
+    }
+
+    function openAllAccordions() {
+      document.querySelectorAll(".accordion-content").forEach((el) => {
+        if (!el.classList.contains("open")) {
+          el.classList.add("open");
+          el.style.height = "auto";
+          const h = el.scrollHeight + "px";
+          el.style.height = "0px";
+          requestAnimationFrame(() => {
+            el.style.height = h;
+            el.setAttribute("aria-hidden", "false");
+          });
+          el.addEventListener("transitionend", function tidy(e) {
+            if (e.propertyName === "height") {
+              el.style.height = "auto";
+              el.removeEventListener("transitionend", tidy);
+            }
+          });
+        }
+      });
+      document.querySelectorAll(".chev").forEach((c) => c.classList.remove("-rotate-90"));
+    }
+
+    function closeAllAccordions() {
+      document.querySelectorAll(".accordion-content.open").forEach((el) => {
+        el.style.height = el.scrollHeight + "px";
+        requestAnimationFrame(() => {
+          el.style.height = "0px";
+          el.setAttribute("aria-hidden", "true");
+        });
+        el.addEventListener("transitionend", function tidy(e) {
+          if (e.propertyName === "height") {
+            el.classList.remove("open");
+            el.removeEventListener("transitionend", tidy);
+          }
+        });
+      });
+      document.querySelectorAll(".chev").forEach((c) => c.classList.add("-rotate-90"));
+    }
+
+    expandAllBtn.addEventListener("click", openAllAccordions);
+    collapseAllBtn.addEventListener("click", closeAllAccordions);
+
+    viewFlat.addEventListener('click', () => {
+      currentView = 'flat';
+      viewFlat.classList.add('bg-white/20');
+      viewPivot.classList.remove('bg-white/20');
+      renderFaqs();
+      closeAllAccordions();
+    });
+
+    viewPivot.addEventListener('click', () => {
+      currentView = 'pivot';
+      viewPivot.classList.add('bg-white/20');
+      viewFlat.classList.remove('bg-white/20');
+      renderFaqs();
+      closeAllAccordions();
+    });
+
+    // CSV Handling
+    function showStatus(msg, color = "text-white/80") {
+      statusEl.className = "text-xs " + color;
+      statusEl.textContent = msg;
+    }
+
+    // Simple RFC 4180-ish CSV parser (handles quotes and commas/newlines in quotes)
+    function parseCSV(text) {
+      if (!text || typeof text !== 'string') return [];
+      // Normalize newlines
+      text = text.replace(/\r\n?/g, "\n");
+      const rows = [];
+      let cur = "";
+      let row = [];
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQuotes) {
+          if (ch === '"') {
+            if (text[i + 1] === '"') {
+              cur += '"'; // escaped quote
+              i++;
+            } else {
+              inQuotes = false;
+            }
+          } else {
+            cur += ch;
+          }
+        } else {
+          if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === "," || ch === ";" || ch === "\t") {
+            row.push(cur);
+            cur = "";
+          } else if (ch === "\n") {
+            row.push(cur);
+            rows.push(row);
+            row = [];
+            cur = "";
+          } else if (ch === "\r") {
+            // ignore CR, handle CRLF
+          } else {
+            cur += ch;
+          }
+        }
+      }
+      // push last cell (allow empty trailing line)
+      if (cur.length > 0 || row.length > 0) {
+        row.push(cur);
+        rows.push(row);
+      } else if (text.endsWith('\n')) {
+        // ignore
+      }
+
+      // Trim whitespace around cells
+      return rows.map(r => r.map(c => c.trim()));
+    }
+
+    function normalizeRows(rows) {
+      // Remove empty rows
+      const cleaned = rows.filter(r => r.some(cell => (cell || "").trim() !== ""));
+      if (!cleaned.length) return [];
+
+      // Detect header
+      const first = cleaned[0].map(c => (c || "").toLowerCase());
+      const hasHeader4 = first.includes("brand") && first.includes("category") && first.includes("question") && first.includes("answer");
+      const hasHeader2 = first.length === 2 && first[0] === "question" && first[1] === "answer";
+      const dataRows = (hasHeader4 || hasHeader2) ? cleaned.slice(1) : cleaned;
+
+      // Map to objects: support 2 or 4 columns
+      const out = [];
+      for (const r of dataRows) {
+        let brand = ""; let category = ""; let question = ""; let answer = "";
+        if (r.length >= 4) {
+          [brand, category, question, answer] = [r[0], r[1], r[2], r[3]];
+        } else if (r.length >= 2) {
+          [question, answer] = [r[0], r[1]];
+        }
+        question = (question || "").trim();
+        answer = (answer || "").trim();
+        brand = (brand || "").trim();
+        category = (category || "").trim();
+        if (!question) continue;
+        out.push({ brand, category, question, answer });
+      }
+      return out;
+    }
+
+    async function getTextFromFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        try { reader.readAsText(file); } catch(e) { reject(e); }
+      });
+    }
+
+    function addImportedQuestions(items, replace = false) {
+      const mapped = items.map((it, idx) => ({
+        id: "i" + Date.now().toString(36) + "-" + idx,
+        brand: it.brand || '',
+        category: it.category || '',
+        question: it.question,
+        answer: it.answer
+      }));
+      if (replace) {
+        faqs = mapped;
+      } else {
+        faqs = faqs.concat(mapped);
+      }
+      renderFaqs();
+      showToast("Imported successfully!");
+      if (autoOpenToggle && autoOpenToggle.checked) {
+        const html = buildCleanHtml(faqs);
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(()=>URL.revokeObjectURL(url), 10000);
+      }
+    }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.remove("opacity-0", "pointer-events-none");
+      toast.classList.add("opacity-100");
+      setTimeout(() => {
+        toast.classList.add("opacity-0");
+        setTimeout(() => {
+          toast.classList.add("pointer-events-none");
+        }, 300);
+      }, 1600);
+    }
+
+    // Drop zone interactions
+    dropZone.addEventListener("click", () => fileInput.click());
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("bg-white/20");
+    });
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("bg-white/20");
+    });
+    dropZone.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("bg-white/20");
+      const file = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (!file) return;
+      try {
+        const text = await getTextFromFile(file);
+        const rows = parseCSV(text);
+        const items = normalizeRows(rows);
+        if (!items.length) {
+          showStatus("No valid rows found.", "text-yellow-200");
+          return;
+        }
+        addImportedQuestions(items, replaceToggle.checked);
+        showStatus(`Imported ${items.length} item(s) from file.`, "text-emerald-200"); if(!items.length){showStatus('No rows matched brand/category/question/answer.', 'text-yellow-200');}
+        csvText.value = "";
+        fileInput.value = "";
+      } catch {
+        showStatus("Could not read that file.", "text-rose-200");
+      }
+    });
+
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      try {
+        const text = await getTextFromFile(file);
+        const rows = parseCSV(text);
+        const items = normalizeRows(rows);
+        if (!items.length) {
+          showStatus("No valid rows found.", "text-yellow-200");
+          return;
+        }
+        addImportedQuestions(items, replaceToggle.checked);
+        showStatus(`Imported ${items.length} item(s) from file.`, "text-emerald-200"); if(!items.length){showStatus('No rows matched brand/category/question/answer.', 'text-yellow-200');}
+        csvText.value = "";
+        fileInput.value = "";
+      } catch {
+        showStatus("Could not read that file.", "text-rose-200");
+      }
+    });
+
+    importBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const text = csvText.value.trim();
+      if (!text) {
+        showStatus("Paste CSV or choose a file.", "text-yellow-200");
+        return;
+      }
+      const rows = parseCSV(text);
+      const items = normalizeRows(rows);
+      if (!items.length) {
+        showStatus("No valid rows found.", "text-yellow-200");
+        return;
+      }
+      addImportedQuestions(items, replaceToggle.checked);
+      showStatus(`Imported ${items.length} item(s) from pasted text.`, "text-emerald-200");
+      csvText.value = "";
+    });
+
+    clearInputsBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      csvText.value = "";
+      fileInput.value = "";
+      showStatus("Cleared.");
+    });
+
+    downloadSampleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const sample = [
+        "brand,category,question,answer",
+        "Acme,Orders,What payment methods do you accept?,We accept credit cards, PayPal, and bank transfers.",
+        "Globex,Orders,Can I change my order?,Yes, you can update your order within 24 hours of purchase.",
+        "Initech,Refunds,\"How do refunds work?\",\"Refunds are processed within 5–7 business days after approval.\""
+      ].join("\n");
+      const blob = new Blob([sample], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "faq-sample.csv";
+      a.rel = "noopener noreferrer";
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 0);
+    });
+
+    // Initialize
+    renderFaqs();
+
+    // Clean FAQ-only page creator
+    function buildCleanHtml(data){
+      const safe = (s)=>String(s||'')
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      const answerHTML = (s)=>safe(s).replace(/\n/g,'<br>');
+      const items = JSON.parse(JSON.stringify(data||[]));
+      const now = new Date().toLocaleString();
+      return `<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+<meta charset=\"UTF-8\" />
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+<title>FAQs</title>
+<script src=\"https://cdn.tailwindcss.com\"></script>
+<style>
+  .accordion-content{transition:height 250ms ease, opacity 200ms ease;overflow:hidden;opacity:0;height:0}
+  .accordion-content.open{opacity:1}
+  .frost-card{background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.22)}
+  .badge{display:inline-flex;align-items:center;gap:.5rem;padding:.25rem .6rem;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+  .group-card{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);border-radius:1rem;overflow:hidden}
+  .group-head{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1rem}
+  .group-body{padding:.25rem .75rem 1rem}
+</style>
+</head>
+<body class=\"min-h-screen bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-white antialiased\">
+  <div class=\"max-w-5xl mx-auto px-6 py-12\">
+    <header class=\"mb-10\">
+      <div class=\"inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/20 shadow-sm\">
+        <span class=\"text-xs\">✨</span>
+        <span class=\"text-xs tracking-wide\">FAQ</span>
+      </div>
+      <h1 class=\"mt-4 text-4xl md:text-5xl font-bold leading-tight\">Frequently Asked Questions</h1>
+      <p class=\"mt-3 text-white/85 max-w-2xl\">Generated on ${safe(now)}. Click a question to expand. Grouped by brand → category.</p>
+    </header>
+
+    <section class=\"frost-card rounded-2xl p-1\">
+      <div class=\"rounded-2xl p-6 bg-gradient-to-b from-white/10 to-white/5\">
+        <div class=\"flex items-center justify-between mb-4\">
+          <h2 class=\"text-xl font-semibold\">FAQs</h2>
+          <div class=\"flex items-center gap-2\">
+            <button id=\"expandAllBtn\" class=\"px-3 py-2 text-sm rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 transition\">Expand all</button>
+            <button id=\"collapseAllBtn\" class=\"px-3 py-2 text-sm rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 transition\">Collapse all</button>
+          </div>
+        </div>
+        <div id=\"pivotView\" class=\"space-y-4\"></div>
+        <p id=\"emptyState\" class=\"hidden text-center text-white/80 py-10\">No questions.</p>
+      </div>
+    </section>
+
+    <footer class=\"mt-12 text-center text-white/70 text-sm\">Generated by Canva Code</footer>
+  </div>
+
+  <script>
+    const faqs = ${JSON.stringify(items)};
+    const pivotView = document.getElementById('pivotView');
+    const emptyState = document.getElementById('emptyState');
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    const collapseAllBtn = document.getElementById('collapseAllBtn');
+
+    function escapeHTML(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;')}
+    function formatAnswerHTML(s){return escapeHTML(s).replace(/\n/g,'<br>')}
+
+    function animateOpen(el){el.classList.add('open');el.style.height='auto';const h=el.scrollHeight+'px';el.style.height='0px';requestAnimationFrame(()=>{el.style.height=h;el.setAttribute('aria-hidden','false')});el.addEventListener('transitionend',function tidy(e){if(e.propertyName==='height'){el.style.height='auto';el.removeEventListener('transitionend',tidy)}})}
+    function animateClose(el){el.style.height=el.scrollHeight+'px';requestAnimationFrame(()=>{el.style.height='0px';el.setAttribute('aria-hidden','true')});el.addEventListener('transitionend',function tidy(e){if(e.propertyName==='height'){el.classList.remove('open');el.removeEventListener('transitionend',tidy)}})}
+
+    function renderPivot(){
+      pivotView.innerHTML='';
+      if(!faqs.length){emptyState.classList.remove('hidden');return}
+      emptyState.classList.add('hidden');
+      const byBrand={};
+      for(const it of faqs){const b=it.brand||'Unassigned';const c=it.category||'General';(byBrand[b]??=( {} ))[c]??=( [] );byBrand[b][c].push(it)}
+      const brandNames=Object.keys(byBrand).sort(Intl.Collator().compare);
+      for(const b of brandNames){
+        const wrap=document.createElement('div');
+        wrap.className='group-card';
+        const cats=byBrand[b];
+        const catNames=Object.keys(cats).sort(Intl.Collator().compare);
+        wrap.innerHTML=`<div class=\\"group-head\\"><div class=\\"flex items-center gap-2\\"><span class=\\"badge\\">🏷️ <span class=\\"font-semibold\\">${escapeHTML(b)}<\\/span><\\/span><span class=\\"text-xs opacity-80\\">${catNames.length} categor${catNames.length===1?'y':'ies'}<\\/span><\\/div><\\/div><div class=\\"group-body space-y-3\\"><\\/div>`;
+        const body=wrap.querySelector('.group-body');
+        for(const c of catNames){
+          const items=cats[c];
+          const section=document.createElement('div');
+          section.className='rounded-xl border border-white/15 bg-white/5';
+          const secId='sec-'+b.replace(/\\\\W+/g,'_')+'-'+c.replace(/\\\\W+/g,'_');
+          section.innerHTML=`<button data-sec=\\"${secId}\\" class=\\"w-full flex items-center justify-between px-4 py-3\\"><div class=\\"flex items-center gap-2\\"><span class=\\"badge\\">📂 <span>${escapeHTML(c)}<\\/span><\\/span><span class=\\"text-xs opacity-80\\">${items.length} item${items.length===1?'':'s'}<\\/span><\\/div><svg class=\\"chev transition -rotate-90\\" width=\\"18\\" height=\\"18\\" viewBox=\\"0 0 24 24\\" fill=\\"none\\" stroke=\\"currentColor\\" stroke-width=\\"2\\"><path d=\\"M6 9l6 6 6-6\\"><\\/path><\\/svg><\\/button><div class=\\"accordion-content px-2\\" id=\\"${secId}\\" aria-hidden=\\"true\\"><div class=\\"py-3 border-t border-white/10 space-y-2\\">${items.map(it=>`<div class=\\\\\\"rounded-lg border border-white/10 bg-white/5 overflow-hidden\\\\\\"><button data-id=\\\\\\"${it.id}\\\\\\" class=\\\\\\"w-full flex items-center justify-between gap-4 px-3 py-3 hover:bg-white/10 transition\\\\\\"><span class=\\\\\\"text-left\\\\\\"><span class=\\\\\\"text-sm font-medium\\\\\\">${escapeHTML(it.question)}<\\\\u002Fspan><\\\\u002Fspan><span class=\\\\\\"shrink-0 inline-flex w-7 h-7 items-center justify-center rounded-full bg-white/10 border border-white/20\\\\\\"><svg class=\\\\\\"chev transition -rotate-90\\\\\\" width=\\\\\\"16\\\\\\" height=\\\\\\"16\\\\\\" viewBox=\\\\\\"0 0 24 24\\\\\\" fill=\\\\\\"none\\\\\\" stroke=\\\\\\"currentColor\\\\\\" stroke-width=\\\\\\"2\\\\\\"><path d=\\\\\\"M6 9l6 6 6-6\\\\\\"><\\\\u002Fpath><\\\\u002Fsvg><\\\\u002Fspan><\\\\u002Fbutton><div class=\\\\\\"accordion-content px-3\\\\\\" id=\\\\\\"content-${it.id}\\\\\\" aria-hidden=\\\\\\"true\\\\\\"><div class=\\\\\\"py-3 border-t border-white/10 text-white/90 leading-relaxed\\\\\\">${formatAnswerHTML(it.answer)}<\\\\u002Fdiv><\\\\u002Fdiv><\\\\u002Fdiv>`).join('')}<\\/div><\\/div>`;
+          body.appendChild(section);
+        }
+        pivotView.appendChild(wrap);
+      }
+    }
+
+    pivotView.addEventListener('click', (e)=>{
+      const secBtn=e.target.closest('button[data-sec]');
+      if(secBtn){const id=secBtn.getAttribute('data-sec');const content=document.getElementById(id);const icon=secBtn.querySelector('.chev');const isOpen=content.classList.contains('open');if(isOpen){animateClose(content);icon.classList.add('-rotate-90')}else{animateOpen(content);icon.classList.remove('-rotate-90')}return}
+      const qBtn=e.target.closest('button[data-id]');
+      if(qBtn){const id=qBtn.getAttribute('data-id');const content=document.getElementById('content-'+id);const icon=qBtn.querySelector('.chev');const isOpen=content.classList.contains('open');if(isOpen){animateClose(content);icon.classList.add('-rotate-90')}else{animateOpen(content);icon.classList.remove('-rotate-90')}}
+    });
+
+    function openAll(){document.querySelectorAll('.accordion-content').forEach((el)=>{if(!el.classList.contains('open')){el.classList.add('open');el.style.height='auto';const h=el.scrollHeight+'px';el.style.height='0px';requestAnimationFrame(()=>{el.style.height=h;el.setAttribute('aria-hidden','false')});el.addEventListener('transitionend',function tidy(e){if(e.propertyName==='height'){el.style.height='auto';el.removeEventListener('transitionend',tidy)}})}});document.querySelectorAll('.chev').forEach((c)=>c.classList.remove('-rotate-90'))}
+    function closeAll(){document.querySelectorAll('.accordion-content.open').forEach((el)=>{el.style.height=el.scrollHeight+'px';requestAnimationFrame(()=>{el.style.height='0px';el.setAttribute('aria-hidden','true')});el.addEventListener('transitionend',function tidy(e){if(e.propertyName==='height'){el.classList.remove('open');el.removeEventListener('transitionend',tidy)}})});document.querySelectorAll('.chev').forEach((c)=>c.classList.add('-rotate-90'))}
+
+    expandAllBtn.addEventListener('click',openAll);
+    collapseAllBtn.addEventListener('click',closeAll);
+
+    renderPivot();
+  <\/script>
+</body>
+</html>`;
+    }
+
+    // Open clean FAQ-only page in a new tab
+    openCleanBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const html = buildCleanHtml(faqs);
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      setTimeout(()=>URL.revokeObjectURL(url), 10000);
+    });
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981df4e33752fee4',t:'MTc1ODMzNjAxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
